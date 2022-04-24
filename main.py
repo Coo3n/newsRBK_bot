@@ -14,7 +14,7 @@ bot = Bot(token=TOKEN)
 storage = MemoryStorage()
 dispetcher = Dispatcher(bot,storage = storage)
 finish_str = ""
-f = ""
+
 async def anti_flood(*args, **kwargs):
     ans = args[0]
     await ans.answer("Прекрати ломать бота, кликай спокойней")
