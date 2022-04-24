@@ -1,0 +1,11 @@
+aiogram
+asyncio
+time
+json
+email
+bs4
+fake_useragent
+requests
+webbrowser
+unittest
+msilib.schema
