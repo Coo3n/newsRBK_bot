@@ -52,8 +52,13 @@ def choice_rubric(rubric, varios_get_news):
         url_req = f"https://www.rbc.ru/v10/ajax/get-news-by-filters/?category=politics&offset=0&limit={limit}"
     elif rubric == "Экономика":
         url_req = f"https://www.rbc.ru/v10/ajax/get-news-by-filters/?category=economics&offset=0&limit={limit}"
+    elif rubric == "Бизнес":
+        url_req = f"https://www.rbc.ru/v10/ajax/get-news-by-filters/?category=business&offset=0&limit={limit}"
+    elif rubric == "Общество":
+        url_req = f"https://www.rbc.ru/v10/ajax/get-news-by-filters/?category=society&offset=0&limit={limit}"
     elif rubric == "Спорт":
         url_req = f"https://sportrbc.ru/ajax/get-news-feed-short/project/sport/lastDate/{current_data}/limit/{limit}"
+
     parse_site(rubric, url_req)
     
 if __name__ == '__main__':

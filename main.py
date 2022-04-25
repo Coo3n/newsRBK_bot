@@ -14,7 +14,7 @@ bot = Bot(token=TOKEN)
 storage = MemoryStorage()
 dispetcher = Dispatcher(bot,storage = storage)
 finish_str = ""
-f = ""
+
 async def anti_flood(*args, **kwargs):
     ans = args[0]
     await ans.answer("Прекрати ломать бота, кликай спокойней")
@@ -29,7 +29,7 @@ async def process_help_command(message: types.Message):
     await message.reply("Данный Бот предоставляет услуги новостного канала! Чтобы получить новость - нажмите на одну из предложенных кнопок!")
 
 @dispetcher.message_handler(Text(equals="🆕Последняя новость"))
-@dispetcher.throttled(anti_flood, rate=2)
+@dispetcher.throttled(anti_flood, rate = 1.5)
 async def get_last_new(message: types.Message):
     choice_rubric(finish_str,"Последняя новость")
     cnt_str = 1
@@ -44,9 +44,9 @@ async def get_last_new(message: types.Message):
     result_list.clear()
 
 @dispetcher.message_handler(Text(equals="📰Текущие новости"))
-@dispetcher.throttled(anti_flood, rate=1.5)
+@dispetcher.throttled(anti_flood, rate=2)
 async def get_lastFive_news(message: types.Message):
-    choice_rubric(finish_str,"Текущие новости")
+    choice_rubric(finish_str, "Текущие новости")
     cnt_str = 1
     for news in result_list:
         if cnt_str == 2:
@@ -71,6 +71,12 @@ async def switch_menu(message: types.Message):
         case "🏋Спорт":
             finish_str = "Спорт"
             await message.answer("🏋Спорт", reply_markup=kb.other_menu)
+        case "💰Бизнес":
+            finish_str = "Бизнес"
+            await message.answer("💰Бизнес", reply_markup=kb.other_menu)
+        case "👨‍👩‍👧‍👦Общество":
+            finish_str = "Общество"
+            await message.answer("👨‍👩‍👧‍👦Общество", reply_markup=kb.other_menu)
         case "🔙Главное меню":
             await message.answer("🔙Главное меню", reply_markup=kb.main_menu)
         case _:
