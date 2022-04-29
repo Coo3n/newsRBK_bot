@@ -2,15 +2,17 @@ from asyncio.windows_events import NULL
 from email import message, message_from_file
 from aiogram import Bot, types
 import time 
+import random
+import requests
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
 from aiogram.dispatcher.filters import Text
-from config import TOKEN
+from config import TOKEN, vk_token
 from req import parse_site, choice_rubric, result_list
 import keyboard as kb
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.utils.exceptions import Throttled
-import vk_req
+
 
 bot = Bot(token=TOKEN)
 storage = MemoryStorage()
@@ -33,7 +35,26 @@ async def process_help_command(message: types.Message):
 
 @dispetcher.callback_query_handler(text_contains="btn")
 async def process_callback_btnCats(call: types.CallbackQuery):
-    await call.message.answer_photo(photo=open('mortis.jpg', 'rb'))
+    group = ["kotikihujotiki", "v.kote"]
+    url = f"https://api.vk.com/method/wall.get?domain={group[random.randint(0, len(group)-1)]}&count=10&access_token={vk_token}&v=5.81"
+    req = requests.get(url)
+    src = req.json()
+
+    posts = src["response"]["items"]
+
+    result = []
+
+    for post in posts:
+        try:
+            if "attachments" in post:
+                post = post["attachments"]
+            if post[0]["type"] == "photo":
+                result.append(post[0]["photo"]["sizes"][-1]["url"])
+        except Exception:
+            print("Oups!")
+
+    await bot.send_photo(call.from_user.id, result[random.randint(0, len(result)-1)])
+
 
 @dispetcher.message_handler(Text(equals="🆕Последняя новость"))
 @dispetcher.throttled(anti_flood, rate = 1.5)
@@ -94,7 +115,6 @@ async def switch_menu(message: types.Message):
             await message.answer("🔙Главное меню", reply_markup=kb.main_menu)
         case _:
             await message.answer("Введена неизвестная команда!" +'\n'+ "Попробуйте написать команду: /help")
-
         
 
 if __name__ == '__main__':

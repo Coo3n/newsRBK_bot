@@ -11,7 +11,6 @@ from config import vk_token
 
 result_list = []
 
-
 def parse_site(rubric, url_req):
     print("-------------------------------------------")
 
