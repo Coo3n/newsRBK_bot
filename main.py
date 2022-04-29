@@ -10,10 +10,11 @@ from req import parse_site, choice_rubric, result_list
 import keyboard as kb
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.utils.exceptions import Throttled
+import vk_req
 
 bot = Bot(token=TOKEN)
 storage = MemoryStorage()
-dispetcher = Dispatcher(bot,storage = storage)
+dispetcher = Dispatcher(bot, storage = storage)
 finish_str = ""
 
 async def anti_flood(*args, **kwargs):
@@ -32,39 +33,43 @@ async def process_help_command(message: types.Message):
 
 @dispetcher.callback_query_handler(text_contains="btn")
 async def process_callback_btnCats(call: types.CallbackQuery):
-    #await bot.delete_message(callback_query.from_user.id, callback_query.message.message_id)
     await call.message.answer_photo(photo=open('mortis.jpg', 'rb'))
 
 @dispetcher.message_handler(Text(equals="🆕Последняя новость"))
 @dispetcher.throttled(anti_flood, rate = 1.5)
 async def get_last_new(message: types.Message):
-    choice_rubric(finish_str,"Последняя новость")
-    cnt_str = 1
-    for news in result_list:
-        if cnt_str == 2:
-            res = title + '\n' + news
-            await message.answer(res, reply_markup = kb.inline_menu)
-            cnt_str = 1
-        elif cnt_str == 1:
-            title = news
-            cnt_str+=1
-    result_list.clear()
-   
+    try:
+        choice_rubric(finish_str,"Последняя новость")
+        cnt_str = 1
+        for news in result_list:
+            if cnt_str == 2:
+                res = title + '\n' + news
+                await message.answer(res, reply_markup = kb.inline_menu)
+                cnt_str = 1
+            elif cnt_str == 1:
+                title = news
+                cnt_str+=1
+        result_list.clear()
+    except:
+        await message.answer("Пожалуйста, выбери еще раз рубрику!", reply_markup = kb.main_menu)
 
 @dispetcher.message_handler(Text(equals="📰Текущие новости"))
 @dispetcher.throttled(anti_flood, rate=2)
 async def get_lastFive_news(message: types.Message):
-    choice_rubric(finish_str, "Текущие новости")
-    cnt_str = 1
-    for news in result_list:
-        if cnt_str == 2:
-            res = "🔥 " + title + '\n' + news
-            await message.answer(res, reply_markup = kb.inline_menu)
-            cnt_str = 1
-        elif cnt_str == 1:
-            title = news
-            cnt_str+=1
-    result_list.clear()
+    try:
+        choice_rubric(finish_str, "Текущие новости")
+        cnt_str = 1
+        for news in result_list:
+            if cnt_str == 2:
+                res = "🔥 " + title + '\n' + news
+                await message.answer(res, reply_markup = kb.inline_menu)
+                cnt_str = 1
+            elif cnt_str == 1:
+                title = news
+                cnt_str+=1
+        result_list.clear()
+    except:
+        await message.answer("Пожалуйста, выбери еще раз рубрику!", reply_markup = kb.main_menu)
 
 @dispetcher.message_handler()
 async def switch_menu(message: types.Message):

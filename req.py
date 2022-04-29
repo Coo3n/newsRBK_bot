@@ -7,6 +7,7 @@ from webbrowser import get
 import requests
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
+from config import vk_token
 
 result_list = []
 
@@ -17,7 +18,6 @@ def parse_site(rubric, url_req):
     request = requests.get(url_req, headers={'User-Agent': UserAgent().chrome}) 
     data = json.loads(request.text)
     iteration = 1
-   
     if rubric == "Спорт":   
         for item in data['items']:
             article = item['html']
@@ -37,7 +37,6 @@ def parse_site(rubric, url_req):
             result_list.append(data.get("href"))
             print("(+) ARTICLE CARD №", iteration, "IS READY")
             iteration+=1
-
     print("-------------------------------------------")
 
     
